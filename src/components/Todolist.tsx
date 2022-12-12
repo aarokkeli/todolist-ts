@@ -1,34 +1,60 @@
-import React, { useState } from "react";
-import Todotable from "./Todotable";
-import { Todo } from "../Interfaces";
+import React, { useState } from 'react';
+import Todotable from './Todotable';
 
-export default function Todolist() {
-    const [todo, setTodo] = useState({desc: '', date: '', priority: ''});
-    const [todos, setTodos] = useState<Array<Todo>>([]);
+function Todolist() {
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTodo({...todo, [event.target.id]: event.target.value});
+    interface ITodo {
+        desc: string,
+        date: string,
+        priority: string
     }
 
-    const addTodo = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const [todo, setTodo] = useState<ITodo>({} as ITodo);
+    const [todos, setTodos] = useState<Array<ITodo>>([]);
+
+    const addTodo = (todo: ITodo) => {
         setTodos([...todos, todo]);
-        setTodo({desc: '', date: '', priority: ''})
     }
 
-    const deleteTodo = (row: number) => {
-        setTodos(todos.filter((todo, index) => row !== index));
+    const inputChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTodo({ ...todo, [event.target.id]: event.target.value });
     }
+
+    const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        addTodo(todo)
+    }
+
+    const deleteItem = (index: any) => () => {
+        setTodos((todos) => todos.filter((_, i) => i !== index))
+    }
+
+
 
     return (
-        <div>
-            <form onSubmit={addTodo}>
-                <input type='text' id='desc' value={todo.desc} onChange={handleChange} placeholder="Description" />
-                <input type='text' id='date' value={todo.date} onChange={handleChange} placeholder="Date" />
-                <input type='text' id='priority' value={todo.priority} onChange={handleChange} placeholder="Priority" />
-                <input type='submit' value='Add' />
+        <>
+            <form onSubmit={submitForm}>
+
+                <input type='text' id='desc' value={todo.desc} placeholder="Description" onChange={inputChanged} />
+
+                <input type='text' id='date' value={todo.date} placeholder="Date" onChange={inputChanged} />
+
+                <input type='text' id='priority' value={todo.priority} placeholder="Priority" onChange={inputChanged} />
+                <input type='submit' value='Submit' />
             </form>
-            <Todotable todos={todos} deleteTodo={deleteTodo} />
-        </div>
-    )
+            <table id="todotable"><tbody>
+                {
+                    todos.map((todo: any, index: any) =>
+                        <tr key={index}>
+                            <td>{todo.desc}</td>
+                            <td>{todo.date}</td>
+                            <td>{todo.priority}</td>
+                            <td><button onClick={deleteItem(index)}>Delete</button></td>
+                        </tr>)
+                }
+            </tbody></table>
+        </>
+    );
 }
+
+export default Todolist;

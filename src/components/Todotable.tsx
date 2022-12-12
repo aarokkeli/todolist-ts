@@ -1,24 +1,22 @@
-import { Todo } from '../Interfaces';
+import React, { useState } from 'react';
+import Todolist from './Todolist';
 
-interface IProps {
-    todos: Array<Todo>,
-    deleteTodo: (row: number) => void;
-}
+function Todotable(todos: any) {
 
-export default function Todotable(props: IProps) {
     return (
-        <div>
-            <table id='todotable'><tbody>
+        <>
+            <table id="todotable"><tbody>
                 {
-                    props.todos.map((todo, index) =>
+                    todos.map((todo: any, index: any) =>
                         <tr key={index}>
                             <td>{todo.desc}</td>
                             <td>{todo.date}</td>
                             <td>{todo.priority}</td>
-                            <td><button onClick={() => props.deleteTodo(index)}>Delete</button></td>
                         </tr>)
                 }
             </tbody></table>
-        </div>
-    )
+        </>
+    );
 }
+
+export default Todotable;
